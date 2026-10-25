@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>本命定居城市 · 心理测试</title>
+  <style>
+    /* 小清新色系：奶白 + 浅豆绿 + 雾霾蓝 + 藕粉 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(160deg, #f4f9f4 0%, #f7f6f0 40%, #f0f4f8 100%);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 16px 12px 40px;
+    }
+
+    .app {
+      max-width: 500px;
+      width: 100%;
+      background: rgba(255, 255, 252, 0.86);
+      backdrop-filter: blur(8px);
+      border-radius: 36px;
+      padding: 28px 22px 32px;
+      box-shadow: 0 16px 40px rgba(160, 180, 170, 0.10), 0 4px 16px rgba(180, 200, 210, 0.08);
+      border: 1px solid #e2ece4;
+    }
+
+    /* 顶部主标题 */
+    .main-title {
+      font-size: 21px;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+      color: #5e7468;
+      text-align: center;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .subhead {
+      text-align: center;
+      font-size: 14px;
+      color: #a3b8ad;
+      margin-bottom: 24px;
+      font-weight: 380;
+      border-bottom: 1px solid #e4ede6;
+      padding-bottom: 16px;
+    }
+
+    /* 封面导语 */
+    .intro {
+      background: #f2f8f3;
+      padding: 18px 18px;
+      border-radius: 24px;
+      margin-bottom: 24px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #6e8579;
+      font-weight: 380;
+      border: 1px solid #dcebe0;
+    }
+
+    .intro p {
+      margin-bottom: 6px;
+    }
+
+    /* 答题区域卡片 */
+    .question-card {
+      transition: opacity 0.2s ease;
+    }
+
+    .progress {
+      text-align: right;
+      font-size: 13px;
+      color: #b0c5b9;
+      margin-bottom: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    .question-text {
+      font-size: 18px;
+      font-weight: 480;
+      color: #4f665a;
+      line-height: 1.5;
+      margin-bottom: 22px;
+      padding-right: 8px;
+    }
+
+    /* 选项按钮 */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      background: #f9fcf9;
+      border: 1.5px solid #dcebe2;
+      border-radius: 60px;
+      padding: 16px 20px;
+      font-size: 15.5px;
+      font-weight: 400;
+      color: #5e7468;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+      line-height: 1.4;
+      box-shadow: 0 1px 3px rgba(160, 180, 170, 0.06);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .option-btn:active {
+      background: #eaf4ed;
+      border-color: #b8d3c4;
+    }
+
+    .option-btn.selected {
+      background: #e3f2e8;
+      border-color: #a7c7b6;
+      color: #3f5a4c;
+      font-weight: 450;
+      box-shadow: 0 3px 10px rgba(150, 190, 170, 0.16);
+    }
+
+    /* 下一题按钮 */
+    .next-btn-container {
+      margin-top: 32px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .next-btn {
+      background: #d8ebdf;
+      border: none;
+      border-radius: 60px;
+      padding: 15px 48px;
+      font-size: 17px;
+      font-weight: 440;
+      color: #4a6357;
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 100%;
+      letter-spacing: 0.5px;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 6px 16px rgba(170, 205, 185, 0.22);
+      border: 1px solid #cde3d6;
+    }
+
+    .next-btn:active {
+      background: #c8e0d2;
+      transform: scale(0.99);
+    }
+
+    .next-btn:disabled {
+      opacity: 0.45;
+      pointer-events: none;
+      box-shadow: none;
+    }
+
+    /* 结果页 */
+    .result-container {
+      margin-top: 8px;
+    }
+
+    .city-card {
+      background: #ffffff;
+      border-radius: 32px;
+      padding: 28px 22px 24px;
+      border: 1px solid #e2ece6;
+      box-shadow: 0 10px 28px rgba(160, 190, 175, 0.09);
+    }
+
+    .city-name {
+      font-size: 28px;
+      font-weight: 500;
+      color: #4b6356;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .city-tag {
+      font-size: 14px;
+      background: #eaf4ee;
+      color: #7a9b89;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-weight: 380;
+      margin-left: 6px;
+    }
+
+    .result-divider {
+      height: 2px;
+      background: linear-gradient(to right, #d5e8dd, transparent);
+      margin: 16px 0 20px;
+      width: 100%;
+    }
+
+    .result-text {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #647d70;
+      font-weight: 380;
+      margin-bottom: 20px;
+    }
+
+    .result-text p {
+      margin-bottom: 14px;
+    }
+
+    .result-text .highlight {
+      color: #5f8470;
+      font-weight: 460;
+      background: #eef8f1;
+      padding: 0 4px;
+      border-radius: 6px;
+    }
+
+    .emotion-note {
+      background: #f2f9f4;
+      padding: 14px 16px;
+      border-radius: 20px;
+      font-size: 14.5px;
+      color: #7b9787;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      border: 1px dashed #cfe6d8;
+      line-height: 1.5;
+    }
+
+    .restart-btn {
+      background: transparent;
+      border: 1.5px solid #d5e8dd;
+      border-radius: 60px;
+      padding: 14px 24px;
+      font-size: 16px;
+      font-weight: 430;
+      color: #6b8a78;
+      width: 100%;
+      margin-top: 26px;
+      cursor: pointer;
+      transition: 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .restart-btn:active {
+      background: #eaf4ee;
+      border-color: #b8d3c4;
+    }
+
+    /* 隐藏辅助 */
+    .hidden {
+      display: none;
+    }
+
+    /* 适配小屏 */
+    @media (max-width: 380px) {
+      .app {
+        padding: 20px 16px 28px;
+      }
+      .question-text {
+        font-size: 17px;
+      }
+      .option-btn {
+        padding: 14px 16px;
+        font-size: 14.5px;
+      }
+      .city-name {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <h1 class="main-title">测试你的本命定居城市</h1>
+  <div class="subhead">你最适合在哪里长期定居？</div>
+
+  <!-- 封面 + 导语 -->
+  <div id="coverSection">
+    <div class="intro">
+      <p>🌿 从气候、通勤、美食到性格……</p>
+      <p>15个现实生活偏好，帮你找到最对味的长期定居地。</p>
+      <p style="font-size:14px; color:#a3b8ad; margin-top:8px;">—— 不玄学，只关乎生活本身 ——</p>
+    </div>
+    <div class="next-btn-container">
+      <button class="next-btn" id="startBtn">开始测试</button>
+    </div>
+  </div>
+
+  <!-- 答题区域 -->
+  <div id="quizSection" class="hidden">
+    <div class="question-card">
+      <div class="progress" id="progressText">1 / 15</div>
+      <div class="question-text" id="questionText">题目加载中...</div>
+      <div class="options" id="optionsContainer"></div>
+      <div class="next-btn-container">
+        <button class="next-btn" id="nextBtn" disabled>下一题</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 结果区域 -->
+  <div id="resultSection" class="hidden result-container">
+    <!-- 结果动态渲染 -->
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ----------------------------------- 城市数据（国内25+国外10，共35个）--------------------------------
+    const cityData = [
+      // 国内 25
+      { name: '成都', country: '国内', desc: '巴适得板，安逸之城', text: '成都的安逸是浸在骨子里的。🌿 宜居亮点：生活节奏松弛，美食密度极高，周边雪山湖泊环绕，茶馆与咖啡馆无缝切换。适合性格：喜欢慢生活、爱社交又需要个人空间、对辣味接受度高的人。小缺点：冬天日照偏少，偶尔雾霾，部分区域潮湿。但当你坐在人民公园喝盖碗茶时，这些都不那么重要了。', tags: ['慢节奏', '辣', '潮湿可接受', '热闹', '房价低', '自然', '文化', '安逸'] },
+      { name: '杭州', country: '国内', desc: '一半山水一半城', text: '杭州把诗意和互联网都揉进了日常。🍃 宜居亮点：西湖免费，城市绿化极好，公共自行车系统友好，人文与科技并存。适合性格：追求平衡、喜欢散步与骑行、对审美有要求的人。小缺点：梅雨季潮湿，旅游旺季人多，房价不低。但春天的龙井茶香和秋天的满陇桂雨，值得。', tags: ['四季分明', '潮湿可接受', '安静宜居', '中等收入', '自然', '文化', '包容', '公交便利'] },
+      { name: '昆明', country: '国内', desc: '四季如春懒洋洋', text: '昆明是天然的大空调。🌸 宜居亮点：气候温和，鲜花论斤卖，阳光充足，生活成本适中。适合性格：怕冷怕热、喜欢户外、不爱内卷的人。小缺点：紫外线强，干燥，城市交通略显拥挤。但冬天不用穿羽绒服，滇池边喂海鸥的日子太治愈了。', tags: ['四季如春', '阳光充足', '慢节奏', '自然', '房价低', '安静宜居', '自由'] },
+      { name: '苏州', country: '国内', desc: '园林里的慢生活', text: '苏州把精致刻在了基因里。🪷 宜居亮点：古典园林与现代新城结合，通勤压力小于一线，水乡温柔。适合性格：内敛雅致、喜欢逛园子、爱吃甜口的人。小缺点：黄梅天潮湿，房价不低。但平江路听评弹、金鸡湖看日落，日子很有质感。', tags: ['四季分明', '潮湿可接受', '安静宜居', '文化', '甜', '公交便利', '中等收入'] },
+      { name: '厦门', country: '国内', desc: '海风与文艺', text: '厦门像一首温柔的海岛诗。🌊 宜居亮点：空气优良，海岸线美，咖啡店密度高，生活节奏舒适。适合性格：浪漫主义、喜欢海边散步、对文艺活动有需求的人。小缺点：夏天台风，房价较高，旅游区喧闹。但走在鼓浪屿小巷或环岛路骑行时，烦恼都吹散了。', tags: ['海边', '文艺', '慢节奏', '四季如春', '潮湿可接受', '海鲜', '网红耐受'] },
+      { name: '青岛', country: '国内', desc: '红瓦绿树，啤酒蛤蜊', text: '青岛的夏天是清凉的蓝。🍺 宜居亮点：夏季凉爽，海鲜丰富，欧式建筑与海景结合，生活气息浓。适合性格：喜欢喝啤酒吃蛤蜊、爱游泳、性格爽朗的人。小缺点：冬天风大，部分区域潮湿。但傍晚拎着袋啤沿海边溜达，太自在了。', tags: ['海边', '海鲜', '四季分明', '潮湿可接受', '热闹', '房价中等', '自然'] },
+      { name: '长沙', country: '国内', desc: '热辣烟火不夜城', text: '长沙的快乐是24小时不打烊的。🔥 宜居亮点：房价友好，美食遍地，娱乐文化发达，年轻人多。适合性格：夜猫子、无辣不欢、喜欢热闹的人。小缺点：夏天闷热，冬天湿冷，交通略拥堵。但一杯茶颜悦色配小龙虾，快乐就这么简单。', tags: ['辣', '热闹', '房价低', '夜生活', '碳水', '年轻人', '网红'] },
+      { name: '西安', country: '国内', desc: '古都碳水天堂', text: '西安把历史泡进了馍里。🍜 宜居亮点：文化底蕴深厚，美食扎实（碳水爱好者狂喜），高校多，生活成本适中。适合性格：喜欢面食、历史迷、性格直爽的人。小缺点：春季沙尘，冬天雾霾。但城墙下听秦腔、回民街逛吃，日子很扎实。', tags: ['碳水', '文化', '房价低', '热闹', '四季分明', '干燥', '历史'] },
+      { name: '重庆', country: '国内', desc: '8D魔幻山城', text: '重庆是立体的赛博朋克。🌆 宜居亮点：火锅便宜，夜景绝美，城市性格鲜明，生活气息浓烈。适合性格：方向感好、爱吃辣、喜欢烟火气的人。小缺点：夏天酷热，爬坡上坎累人，地形复杂。但坐在江边吃火锅看轻轨穿楼，很魔幻很上头。', tags: ['辣', '热闹', '房价低', '自然', '夜景', '烟火气'] },
+      { name: '南京', country: '国内', desc: '金陵梧桐美', text: '南京把厚重与文艺结合得刚好。🍂 宜居亮点：高校云集，绿化极好（梧桐大道），历史文化浓郁，小吃丰富。适合性格：温和内敛、喜欢逛博物馆、爱鸭血粉丝的人。小缺点：夏天闷热，冬天湿冷。但秋天明孝陵的石象路，美得像画。', tags: ['文化', '四季分明', '潮湿可接受', '安静宜居', '公交便利', '历史'] },
+      { name: '广州', country: '国内', desc: '靓仔靓女食咗饭未', text: '广州的务实与温暖藏在早茶里。🍵 宜居亮点：一线城市中生活成本相对友好，美食天堂，气候温暖，包容性强。适合性格：务实、爱喝汤、喜欢市井烟火的人。小缺点：回南天潮湿，夏天炎热。但一盅两件慢慢叹，日子很踏实。', tags: ['潮湿可接受', '海鲜', '热闹', '包容', '房价中等', '美食'] },
+      { name: '深圳', country: '国内', desc: '搞钱也要看海', text: '深圳年轻、高效，又偷偷浪漫。🌴 宜居亮点：公园数量多，空气质量好，城市服务高效，不排外。适合性格：有闯劲、喜欢年轻氛围、追求效率的人。小缺点：房价高，节奏快。但周末去大鹏半岛看海，或者深圳湾骑车，瞬间回血。', tags: ['海边', '高薪', '快节奏', '包容', '年轻人', '自然'] },
+      { name: '珠海', country: '国内', desc: '安静的海滨小城', text: '珠海把舒服写进了海风里。🌊 宜居亮点：环境干净，人口密度低，海边情侣路超长，生活节奏慢。适合性格：喜欢安静、爱散步、对海岛有执念的人。小缺点：产业相对单一，工资水平一般。但傍晚沿着海边踩单车，太惬意了。', tags: ['海边', '安静宜居', '慢节奏', '自然', '房价中等'] },
+      { name: '大理', country: '国内', desc: '苍山洱海慢生活', text: '大理是数字游民的精神故乡。🏔️ 宜居亮点：空气极好，自然风光顶级，咖啡店与市集文艺，生活成本可控。适合性格：自由职业、喜欢自然、追求慢节奏的人。小缺点：紫外线强，医疗配套一般，风大干燥。但坐在洱海边看云卷云舒，自由无价。', tags: ['自然', '慢节奏', '自由职业', '阳光充足', '文艺', '安静宜居'] },
+      { name: '三亚', country: '国内', desc: '冬天也要穿短袖', text: '三亚把冬天变成了夏天。☀️ 宜居亮点：冬季温暖，海水清澈，空气质量极佳，热带水果自由。适合性格：怕冷、爱潜水、喜欢热带氛围的人。小缺点：夏天太热，物价偏高，旅游旺季人多。但冬天穿着短袖看海，就是最大的奢侈。', tags: ['海边', '海鲜', '热带', '阳光充足', '度假'] },
+      { name: '天津', country: '国内', desc: '相声与煎饼果子', text: '天津的幽默感是刻在DNA里的。🎭 宜居亮点：生活节奏慢，物价友好，建筑有特色，教育医疗资源不错。适合性格：喜欢曲艺、爱吃煎饼馃子、不求快的人。小缺点：冬天风大干燥，经济活力一般。但听一场相声，烦恼全消。', tags: ['慢节奏', '碳水', '房价低', '文化', '幽默'] },
+      { name: '武汉', country: '国内', desc: '过早与江湖', text: '武汉的江湖气在过早的热干面里。🥢 宜居亮点：交通枢纽，高校多，美食丰富（碳水爆炸），烟火气浓。适合性格：性格直爽、爱吃早点、能扛热的人。小缺点：夏天极热，冬天湿冷，城市大通勤略长。但过早一个月不重样，太幸福了。', tags: ['碳水', '热闹', '房价中等', '江湖', '公交便利'] },
+      { name: '沈阳', country: '国内', desc: '幽默东北暖乎乎', text: '沈阳把热情和实惠都给了你。🧣 宜居亮点：房价友好，美食量大实惠（鸡架、烧烤），澡堂文化治愈，冬天暖气足。适合性格：喜欢东北幽默、不怕冷、追求性价比的人。小缺点：冬天干冷，重工业印象需更新。但搓完澡吃烧烤，人生圆满。', tags: ['房价低', '幽默', '热闹', '四季分明', '干冷', '烧烤'] },
+      { name: '福州', country: '国内', desc: '温泉榕树慢生活', text: '福州是低调的宜居宝藏。🌳 宜居亮点：温泉资源丰富，榕树成荫，鱼丸肉燕好吃，生活节奏舒适。适合性格：喜欢慢节奏、爱喝汤、对湿热有耐受力的人。小缺点：夏天湿热，台风偶尔光顾。但泡完温泉来一碗锅边糊，很幸福。', tags: ['慢节奏', '温泉', '潮湿可接受', '海鲜', '自然'] },
+      { name: '无锡', country: '国内', desc: '太湖边的甜味', text: '无锡把甜和鲜都做到了极致。🍤 宜居亮点：太湖风光美，城市干净，经济发达但节奏适中，小笼包超好吃。适合性格：爱吃甜、喜欢湖景、追求生活品质的人。小缺点：梅雨季潮湿，房价不低。但鼋头渚的樱花和太湖的落日，值得。', tags: ['甜', '自然', '安静宜居', '中等收入', '湖景'] },
+      { name: '宁波', country: '国内', desc: '书藏古今港通天下', text: '宁波低调又硬核。📚 宜居亮点：港口城市，经济活力强，海鲜丰富，城市干净，生活节奏比杭州松弛。适合性格：务实、爱吃海鲜、喜欢港口氛围的人。小缺点：夏天有台风，冬天湿冷。但天一阁的书香和象山的海鲜，很治愈。', tags: ['海鲜', '务实', '安静宜居', '中等收入', '港口'] },
+      { name: '合肥', country: '国内', desc: '科里科气也烟火', text: '合肥是逆袭的科技新城。🔬 宜居亮点：房价相对友好，科技产业崛起，公园多，生活成本适中。适合性格：对科技行业有期待、喜欢安稳、不追求网红感的人。小缺点：文化底蕴稍弱，夏季闷热。但科学岛和天鹅湖的晚风，很惬意。', tags: ['房价低', '科技', '安静宜居', '公园', '烟火气'] },
+      { name: '郑州', country: '国内', desc: '枢纽中心的踏实', text: '郑州是实打实的烟火之城。🍜 宜居亮点：交通枢纽，生活成本低，美食碳水丰富（烩面、胡辣汤），城市发展快。适合性格：务实、能接受干燥、喜欢热闹的人。小缺点：春季风沙，文化资源稍分散。但一碗烩面下肚，踏实。', tags: ['碳水', '房价低', '热闹', '交通枢纽', '烟火气'] },
+      { name: '哈尔滨', country: '国内', desc: '冰城夏都浪漫', text: '哈尔滨的冬天是童话，夏天是音乐。🎻 宜居亮点：夏季凉爽，欧式建筑美，物价友好，冬天室内温暖。适合性格：不怕冷、喜欢冰雪、对俄式风情有感觉的人。小缺点：冬天漫长干冷，经济转型中。但中央大街的面包石和索菲亚教堂，很浪漫。', tags: ['四季分明', '干冷', '房价低', '文化', '浪漫', '冰雪'] },
+      { name: '拉萨', country: '国内', desc: '日光之城信仰之地', text: '拉萨的阳光能照进心里。☀️ 宜居亮点：阳光充足，天空湛蓝，人文氛围独特，生活节奏极慢。适合性格：向往精神生活、身体适应高原、喜欢安静的人。小缺点：海拔高，氧气稀薄，医疗资源有限。但坐在甜茶馆看转经的人，心会静下来。', tags: ['阳光充足', '安静宜居', '文化', '慢节奏', '自然'] },
+      // 国外 10
+      { name: '清迈', country: '国外', desc: '泰北玫瑰慢生活', text: '清迈把悠闲和咖啡香都装进了古城。🌾 宜居亮点：生活成本低，气候舒适，咖啡店和市集遍地，自然近在咫尺。适合性格：数字游民、喜欢慢节奏、爱逛市集的人。小缺点：烧山季空气质量差，交通略杂乱。但坐在宁曼路喝冰拿铁，太舒服了。', tags: ['慢节奏', '自由职业', '房价低', '文艺', '热带', '咖啡'] },
+      { name: '里斯本', country: '国外', desc: '七丘之城阳光好', text: '里斯本把阳光和瓷砖画进了日常。🚋 宜居亮点：气候温和，物价在欧洲相对友好，老城迷人，海鲜好吃。适合性格：喜欢走路（但要爬坡）、爱复古氛围、对美食有要求的人。小缺点：坡多累人，旅游区略吵。但坐28路电车看老城，像走进电影。', tags: ['阳光充足', '海鲜', '文化', '复古', '欧洲'] },
+      { name: '墨尔本', country: '国外', desc: '咖啡与艺术之都', text: '墨尔本把生活过成了艺术。☕ 宜居亮点：咖啡文化世界顶级，艺术氛围浓厚，公园多，体育赛事丰富。适合性格：文艺青年、咖啡爱好者、喜欢多元文化的人。小缺点：天气一天四季，冬天风大。但小巷里的涂鸦和咖啡香，很上头。', tags: ['文艺', '咖啡', '包容', '自然', '四季分明', '艺术'] },
+      { name: '温哥华', country: '国外', desc: '山海之间的宜居', text: '温哥华被山海温柔拥抱。🌲 宜居亮点：自然风光顶级（海、山、森林），空气好，多元文化包容。适合性格：户外爱好者、喜欢安静、对雨有耐受力的人。小缺点：冬季多雨，房价高。但斯坦利公园骑行和滑雪季，太美好。', tags: ['自然', '安静宜居', '包容', '户外', '海边', '雨'] },
+      { name: '新加坡', country: '国外', desc: '花园城市效率高', text: '新加坡把秩序和绿意结合得完美。🌴 宜居亮点：安全干净，绿化极好，美食多元，交通高效。适合性格：喜欢规则、追求效率、爱热带水果的人。小缺点：湿热，生活成本高，法律严格。但半夜在组屋楼下吃榴莲，很安心。', tags: ['热带', '干净', '多元', '公交便利', '高效', '美食'] },
+      { name: '哥本哈根', country: '国外', desc: '童话与自行车', text: '哥本哈根把环保和幸福写进了街角。🚲 宜居亮点：自行车友好，设计感强，社会福利好，海边清新。适合性格：环保主义者、喜欢骑车、追求简约生活的人。小缺点：冬天阴冷，物价高。但坐在新港看彩色房子，很治愈。', tags: ['自行车', '设计', '环保', '海边', '安静宜居', '简约'] },
+      { name: '巴塞罗那', country: '国外', desc: '高迪与地中海', text: '巴塞罗那的热情在地中海阳光里。🏖️ 宜居亮点：气候温暖，海滩近，建筑惊艳，美食丰富（tapas！），生活节奏晚。适合性格：夜猫子、艺术爱好者、爱海滩的人。小缺点：旅游区小偷多，夏天拥挤。但坐在海边吃海鲜饭，太快乐。', tags: ['海边', '艺术', '热闹', '阳光充足', '夜生活', '海鲜'] },
+      { name: '京都', country: '国外', desc: '千年古都慢生活', text: '京都把四季都过成了诗。🍁 宜居亮点：文化底蕴极深，自然与古迹融合，四季分明，食物精致。适合性格：喜欢安静、热爱传统、对季节敏感的人。小缺点：旅游区人多，租房略贵。但清晨在鸭川散步，心都静了。', tags: ['文化', '四季分明', '安静宜居', '传统', '自然', '慢节奏'] },
+      { name: '柏林', country: '国外', desc: '自由与创意', text: '柏林把自由和粗粝都变成了魅力。🎨 宜居亮点：艺术氛围浓，生活成本在欧洲首都中友好，绿地多，包容性强。适合性格：自由灵魂、艺术家、喜欢夜生活的人。小缺点：冬天阴冷，租房不易。但坐在公园里看人弹吉他，很自在。', tags: ['艺术', '自由', '包容', '夜生活', '房价低', '创意'] },
+      { name: '奥克兰', country: '国外', desc: '帆船之都自然狂', text: '奥克兰把海和火山都装进了城市。⛵ 宜居亮点：自然风光绝佳，户外活动丰富，多元文化，气候温和。适合性格：户外爱好者、喜欢海、向往慢节奏的人。小缺点：远离其他大陆，物价较高。但周末出海或徒步火山，太享受。', tags: ['自然', '海边', '户外', '多元', '帆船', '慢节奏'] }
+    ];
+
+    // ----------------------------- 15道题目 -----------------------------
+    const questions = [
+      { q: '1. 你更喜欢哪种气候？', options: ['四季如春，温暖湿润', '四季分明，冬天有雪', '阳光充足，干燥清爽', '夏天炎热，冬天湿冷也能忍'] },
+      { q: '2. 通勤方面，你最看重？', options: ['步行或骑车可达', '地铁方便，30分钟内', '开车不堵，停车方便', '不介意通勤时间长，住得舒服就行'] },
+      { q: '3. 美食偏好？', options: ['无辣不欢', '清淡鲜甜，原汁原味', '碳水狂热（面食/米饭）', '海鲜和热带水果'] },
+      { q: '4. 能接受潮湿的天气吗？', options: ['完全不能，怕湿冷', '偶尔潮湿可以，但要有阳光', '比较适应，喜欢湿润空气', '无所谓，干湿都能活'] },
+      { q: '5. 你更喜欢热闹还是安静？', options: ['喜欢热闹，夜生活丰富', '安静宜居，但要有生活配套', '闹中取静，随时切换', '完全安静，远离人群'] },
+      { q: '6. 你对收入的期待？', options: ['高薪机会多，卷也愿意', '中等收入，生活成本低', '工资一般但稳定，不加班', '自由职业，赚多赚少看心情'] },
+      { q: '7. 喜欢的季节？', options: ['春天，花开浪漫', '夏天，阳光沙滩', '秋天，凉爽金黄', '冬天，雪景与温泉'] },
+      { q: '8. 对城市包容度的需求？', options: ['多元文化，什么人都能遇到', '本地文化浓厚，有归属感', '年轻人多，不排外', '安静自洽，不需要太多社交'] },
+      { q: '9. 你理想中的周末？', options: ['逛公园/爬山/接触自然', '咖啡馆发呆或逛小店', '约朋友吃饭喝酒', '宅家，点外卖看剧'] },
+      { q: '10. 对房价/租金的预算？', options: ['希望房价友好，压力小', '可以接受较高房价，但要有品质', '租房也行，灵活自由', '不想为房子牺牲生活'] },
+      { q: '11. 你更喜欢哪种城市景观？', options: ['有山有水，自然风光', '历史建筑，老城区', '现代高楼，都市感', '海边/江边，水岸生活'] },
+      { q: '12. 对教育/医疗资源的重视程度？', options: ['非常重视，要有好学区/医院', '一般就行，不太操心', '更看重生活环境', '暂时不考虑这些'] },
+      { q: '13. 你更喜欢哪种出行方式？', options: ['公共交通发达，不用买车', '骑电动车/自行车到处跑', '开车，喜欢道路宽敞', '走路就能解决日常'] },
+      { q: '14. 你对“网红城市”的态度？', options: ['喜欢，热闹有趣', '偶尔打卡可以，但不想住那', '反感，人太多', '只要生活方便，无所谓'] },
+      { q: '15. 你更希望城市给你什么？', options: ['机会与成长', '安逸与舒适', '文化与艺术', '自由与新鲜感'] }
+    ];
+
+    const optionKeywords = [
+      [['四季如春', '温暖', '湿润'], ['四季分明', '雪', '分明'], ['阳光充足', '干燥', '晴朗'], ['炎热', '湿冷', '潮湿可接受']],
+      [['步行', '骑车', '短通勤'], ['地铁', '公交便利', '通勤'], ['开车', '道路宽敞', '停车'], ['长通勤', '住得舒服']],
+      [['辣', '无辣不欢'], ['清淡', '鲜甜', '原味'], ['碳水', '面食', '米饭'], ['海鲜', '热带水果']],
+      [['怕湿', '干燥'], ['偶尔潮湿', '阳光'], ['适应潮湿', '湿润'], ['干湿均可']],
+      [['热闹', '夜生活'], ['安静宜居', '配套'], ['闹中取静', '切换'], ['完全安静', '远离人群']],
+      [['高薪', '卷'], ['中等收入', '生活成本低'], ['稳定', '不加班'], ['自由职业', '赚多赚少']],
+      [['春天', '花开'], ['夏天', '阳光沙滩'], ['秋天', '凉爽'], ['冬天', '雪', '温泉']],
+      [['多元', '文化'], ['本地文化', '归属感'], ['年轻人', '不排外'], ['安静自洽', '社交']],
+      [['自然', '爬山', '公园'], ['咖啡馆', '小店', '发呆'], ['朋友', '吃饭', '喝酒'], ['宅家', '外卖', '看剧']],
+      [['房价低', '压力小'], ['高房价', '品质'], ['租房', '灵活'], ['不为房子牺牲']],
+      [['山水', '自然'], ['历史建筑', '老城区'], ['现代高楼', '都市'], ['海边', '水岸']],
+      [['学区', '医院', '资源'], ['一般', '操心'], ['生活环境'], ['暂时不考虑']],
+      [['公交便利', '地铁'], ['电动车', '自行车'], ['开车', '道路'], ['走路']],
+      [['喜欢', '热闹'], ['偶尔', '打卡'], ['反感', '人多'], ['生活方便', '无所谓']],
+      [['机会', '成长'], ['安逸', '舒适'], ['文化', '艺术'], ['自由', '新鲜感']]
+    ];
+
+    function computeScores(answers) {
+      const scores = cityData.map(city => {
+        let score = 0;
+        const cityTags = city.tags || [];
+        for (let i = 0; i < questions.length; i++) {
+          const ansIdx = answers[i];
+          if (ansIdx === undefined) continue;
+          const keywords = optionKeywords[i][ansIdx];
+          if (!keywords) continue;
+          for (let kw of keywords) {
+            for (let tag of cityTags) {
+              if (tag.includes(kw) || kw.includes(tag)) {
+                score += 3;
+                break;
+              }
+            }
+          }
+        }
+        score += (city.name.charCodeAt(0) % 7) * 0.1;
+        return { city, score };
+      });
+
+      scores.sort((a, b) => b.score - a.score);
+      return scores[0].city;
+    }
+
+    // 状态管理
+    let currentQuestionIndex = 0;
+    let userAnswers = new Array(15).fill(null);
+    let selectedOptionIndex = null;
+
+    // DOM
+    const coverSection = document.getElementById('coverSection');
+    const quizSection = document.getElementById('quizSection');
+    const resultSection = document.getElementById('resultSection');
+    const startBtn = document.getElementById('startBtn');
+    const progressText = document.getElementById('progressText');
+    const questionText = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function renderQuestion(index) {
+      const q = questions[index];
+      progressText.textContent = `${index + 1} / ${questions.length}`;
+      questionText.textContent = q.q;
+      optionsContainer.innerHTML = '';
+      selectedOptionIndex = userAnswers[index];
+      q.options.forEach((opt, optIdx) => {
+        const btn = document.createElement('button');
+        btn.classList.add('option-btn');
+        if (selectedOptionIndex === optIdx) {
+          btn.classList.add('selected');
+        }
+        btn.textContent = opt;
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selectedOptionIndex = optIdx;
+          userAnswers[index] = optIdx;
+          nextBtn.disabled = false;
+        });
+        optionsContainer.appendChild(btn);
+      });
+
+      nextBtn.disabled = (selectedOptionIndex === null);
+      nextBtn.textContent = (index === questions.length - 1) ? '查看结果' : '下一题';
+    }
+
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      userAnswers = new Array(15).fill(null);
+      selectedOptionIndex = null;
+      coverSection.classList.add('hidden');
+      resultSection.classList.add('hidden');
+      quizSection.classList.remove('hidden');
+      renderQuestion(0);
+    }
+
+    function handleNext() {
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        selectedOptionIndex = userAnswers[currentQuestionIndex];
+        renderQuestion(currentQuestionIndex);
+      } else {
+        if (userAnswers[currentQuestionIndex] === null) {
+          alert('请选择一个选项');
+          return;
+        }
+        const resultCity = computeScores(userAnswers);
+        showResult(resultCity);
+      }
+    }
+
+    function showResult(city) {
+      quizSection.classList.add('hidden');
+      resultSection.classList.remove('hidden');
+      const countryLabel = city.country === '国内' ? '国内' : '海外';
+      resultSection.innerHTML = `
+        <div class="city-card">
+          <div class="city-name">
+            ${city.name}
+            <span class="city-tag">${countryLabel}</span>
+          </div>
+          <div class="result-divider"></div>
+          <div class="result-text">
+            ${city.text.split('\n').map(p => `<p>${p}</p>`).join('')}
+          </div>
+          <div class="emotion-note">
+            ✨ 你的本命定居城市是「${city.name}」<br>—— ${city.desc}
+          </div>
+        </div>
+        <button class="restart-btn" id="restartBtn">重新测试</button>
+      `;
+      document.getElementById('restartBtn').addEventListener('click', () => {
+        coverSection.classList.remove('hidden');
+        quizSection.classList.add('hidden');
+        resultSection.classList.add('hidden');
+        userAnswers = new Array(15).fill(null);
+        currentQuestionIndex = 0;
+        selectedOptionIndex = null;
+      });
+    }
+
+    startBtn.addEventListener('click', startQuiz);
+    nextBtn.addEventListener('click', handleNext);
+  })();
+</script>
+</body>
+</html>
